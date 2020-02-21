@@ -89,6 +89,7 @@ trait RestApiClient
         string $endpoint,
         ?array $data = null,
         ?array $headers = null,
+        ?array $query = null,
         bool $dont_refresh = false
     ): ?stdClass {
         // First request which isn't to get a token should get a
@@ -97,7 +98,20 @@ trait RestApiClient
             $this->getFreshToken();
         }
 
-        $body    = json_encode($data ?? []);
+        $body           = null;
+        $contentHeaders = [
+            'Accept' => 'application/json',
+        ];
+
+        if ($data) {
+            $body                           = json_encode($data);
+            $contentHeaders['Content-Type'] = 'application/json';
+        }
+
+        if ($query) {
+            $query = array_dot($query);
+        }
+
         $headers = $headers ?? [
             'GeoClient'  => "account/{$this->auth->account_id}",
             'GeoSession' => $this->auth->token,
@@ -108,10 +122,8 @@ trait RestApiClient
          */
         $response = $this->client->{$method}($endpoint, [
             'body'      => $body,
-            'headers'   => $headers + [
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ],
+            'query'     => $query,
+            'headers'   => $headers + $contentHeaders,
         ]);
 
         $code = $response->getStatusCode();
@@ -129,6 +141,7 @@ trait RestApiClient
                     $endpoint,
                     $data,
                     $headers,
+                    $query,
                     $dont_refresh = true
                 );
             }
@@ -146,9 +159,10 @@ trait RestApiClient
         string $endpoint,
         ?array $data = null,
         ?array $headers = null,
+        ?array $query = null,
         bool $dont_refresh = false
     ): stdClass {
-        if ($response = $this->sendAPIRequest($method, $endpoint, $data, $headers, $dont_refresh)) {
+        if ($response = $this->sendAPIRequest($method, $endpoint, $data, $headers, $query, $dont_refresh)) {
         } else {
             throw new UnexpectedResponse('Response is empty');
         }
@@ -168,15 +182,15 @@ trait RestApiClient
             'Authorization' => "Basic {$login_auth}",
         ];
 
-        $body = [
+        $query = [
             'action' => 'login',
         ];
 
         // Do not refresh, since this IS the refresh request.
-        $response = $this->sendAPIRequestNotEmpty('post', 'user', $body, $headers, true);
+        $response = $this->sendAPIRequestNotEmpty('post', 'user', null, $headers, $query, true);
 
         // Update token then cache.
-        $this->auth->token = $response->token;
+        $this->auth->token = $response->data->geoSession;
 
         if ($this->cache_ttl) {
             Cache::put('dpd-integration-token', $this->auth->token, $this->cache_ttl);

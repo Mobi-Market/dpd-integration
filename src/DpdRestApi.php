@@ -38,9 +38,9 @@ class DpdRestApi
     /*
      * GET /shipping/network
      */
-    public function listServices(array $body): object
+    public function listServices(array $query): object
     {
-        return $this->sendAPIRequestNotEmpty('get', 'shipping/network', $body);
+        return $this->sendAPIRequestNotEmpty('get', 'shipping/network', null, null, $query);
     }
 
     /*
@@ -72,6 +72,6 @@ class DpdRestApi
      */
     public function label(string $shipmentId, string $format): object
     {
-        return $this->sendAPIRequestNotEmpty('get', "shipping/shipment/{$shipmentId}/label", null, ['Content-Type' => $format]);
+        return $this->sendAPIRequestNotEmpty('get', "shipping/shipment/{$shipmentId}/label", null, ['Accept' => $format]);
     }
 }
