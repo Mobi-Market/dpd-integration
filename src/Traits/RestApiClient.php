@@ -91,7 +91,7 @@ trait RestApiClient
         ?array $headers = null,
         ?array $query = null,
         bool $dont_refresh = false
-    ): ?stdClass {
+    ) {
         // First request which isn't to get a token should get a
         // token first.
         if (false === $dont_refresh && null === $this->auth->token) {
@@ -100,7 +100,9 @@ trait RestApiClient
 
         $body           = null;
         $contentHeaders = [
-            'Accept' => 'application/json',
+            'Accept'     => 'application/json',
+            'GeoClient'  => "account/{$this->auth->account_id}",
+            'GeoSession' => $this->auth->token,
         ];
 
         if ($data) {
@@ -112,10 +114,7 @@ trait RestApiClient
             $query = array_dot($query);
         }
 
-        $headers = $headers ?? [
-            'GeoClient'  => "account/{$this->auth->account_id}",
-            'GeoSession' => $this->auth->token,
-        ];
+        $headers = $headers ?? [];
 
         /**
          * @var HttpResponse
@@ -149,9 +148,9 @@ trait RestApiClient
             throw new RequestFailed($response);
         }
 
-        // Methods either return nothing or json, so the caller
-        // should expect an object or null.
-        return json_decode((string) $response->getBody());
+        $body = (string) $response->getBody();
+
+        return json_decode($body) ?? $body;
     }
 
     protected function sendAPIRequestNotEmpty(

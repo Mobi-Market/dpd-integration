@@ -70,8 +70,8 @@ class DpdRestApi
     /*
      * GET /shipping/shipment/{shipmentId}/label
      */
-    public function label(string $shipmentId, string $format): object
+    public function label(string $shipmentId, string $format): string
     {
-        return $this->sendAPIRequestNotEmpty('get', "shipping/shipment/{$shipmentId}/label", null, ['Accept' => $format]);
+        return $this->sendAPIRequest('get', "shipping/shipment/{$shipmentId}/label", null, ['Accept' => $format]);
     }
 }
