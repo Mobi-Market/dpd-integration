@@ -33,7 +33,8 @@
                 "MobiMarket\\DpdShipping\\DpdServiceProvider"
             ],
             "aliases": {
-                "Dpd": "MobiMarket\\DpdShipping\\DpdFacade"
+                "DpdGlobal": "MobiMarket\\DpdShipping\\DpdGloalFacade",
+                "DpdLocal": "MobiMarket\\DpdShipping\\DpdLocalFacade"
             }
         }
     }

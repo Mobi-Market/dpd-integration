@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  */
-class DpdFacade extends Facade
+class DpdGlobalFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return DpdRestApi::class;
+        return DpdGlobalApi::class;
     }
 }

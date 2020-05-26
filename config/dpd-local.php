@@ -7,18 +7,18 @@ return [
      * API Details used for the internal client.
      */
     'api' => [
-        'url'        => env('DPD_API_URL', 'https://api.dpd.co.uk/'),
-        'timeout'    => (float) env('DPD_API_TIMEOUT', 30.0),
-        'should_log' => env('DPD_API_SHOULD_LOG', true),
+        'url'        => env('DPDLOCAL_API_URL', 'https://api.dpdlocal.co.uk/'),
+        'timeout'    => (float) env('DPDLOCAL_API_TIMEOUT', 30.0),
+        'should_log' => env('DPDLOCAL_API_SHOULD_LOG', true),
     ],
 
     /*
      * Authentication details for the DPD integration.
      */
     'auth' => [
-        'account_id' => env('DPD_AUTH_ACCOUNT_ID'),
-        'username'   => env('DPD_AUTH_USERNAME'),
-        'password'   => env('DPD_AUTH_PASSWORD'),
+        'account_id' => env('DPDLOCAL_AUTH_ACCOUNT_ID'),
+        'username'   => env('DPDLOCAL_AUTH_USERNAME'),
+        'password'   => env('DPDLOCAL_AUTH_PASSWORD'),
     ],
 
     /*
