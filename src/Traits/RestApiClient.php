@@ -8,6 +8,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use MobiMarket\DpdShipping\Entities\ApiAuth;
@@ -48,14 +49,14 @@ trait RestApiClient
         if (true === $should_log) {
             $stack->push(
                 Middleware::log(
-                    Log::getMonolog(),
+                    Log::getLogger(),
                     new MessageFormatter('{req_body} - {res_body}')
                 )
             );
 
             $stack->push(
                 Middleware::log(
-                    Log::getMonolog(),
+                    Log::getLogger(),
                     new MessageFormatter('{uri} - {method} - {code}')
                 )
             );
@@ -111,7 +112,7 @@ trait RestApiClient
         }
 
         if ($query) {
-            $query = array_dot($query);
+            $query = Arr::dot($query);
         }
 
         $headers = $headers ?? [];
